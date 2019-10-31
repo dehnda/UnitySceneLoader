@@ -7,15 +7,13 @@ using UnityEngine;
 public class HintManager : MonoBehaviour
 {
     private Hints hints;
-
-    [SerializeField]
-    private string Filename;
+    private string Filename = "hints.json";
     // Start is called before the first frame update
     void Start()
     {
         hints = new Hints();
 
-        string path = Application.dataPath + "/Resources/" + Filename;
+        string path = $"{Application.dataPath}/Resources/{Filename}";
 
         if (!File.Exists(path))
         {
@@ -56,12 +54,6 @@ public class HintManager : MonoBehaviour
         {
             file.WriteAsync(text);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }
 
