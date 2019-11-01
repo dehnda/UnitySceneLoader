@@ -9,6 +9,7 @@ public class SceneLoader : MonoBehaviour
     public GameObject loadingScreen;
     public Slider slider;
     public Text progressText;
+    public Text hint;
 
     public void LoadScene(int sceneIndex)
     {
@@ -19,6 +20,7 @@ public class SceneLoader : MonoBehaviour
     {
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
 
+        hint.text = GetComponent<HintManager>().GetNextHint();
         loadingScreen.SetActive(true);
 
         while (!operation.isDone)

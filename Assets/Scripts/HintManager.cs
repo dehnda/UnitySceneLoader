@@ -7,11 +7,17 @@ using UnityEngine;
 public class HintManager : MonoBehaviour
 {
     private Hints hints;
-    private string Filename = "hints.json";
+    [SerializeField]
+    private string Filename;
+    private List<Hint>.Enumerator currentHint;
     // Start is called before the first frame update
     void Start()
     {
+        if (Filename == "") Debug.LogError("Filename should not be empty");
+
         hints = new Hints();
+
+        currentHint = hints.items.GetEnumerator();
 
         string path = $"{Application.dataPath}/Resources/{Filename}";
 
@@ -23,11 +29,10 @@ public class HintManager : MonoBehaviour
         else
         {
             var json = ReadFromFile(Filename);
-            Debug.Log(json);
             JsonUtility.FromJsonOverwrite(json, hints);
         }
 
-        Debug.Log(JsonUtility.ToJson(hints));
+        Debug.Assert(hints.items.Count > 0, "SceneLoader: HintList is empty!");
     }
 
 
@@ -54,6 +59,16 @@ public class HintManager : MonoBehaviour
         {
             file.WriteAsync(text);
         }
+    }
+
+    public string GetNextHint() {
+
+        if (!currentHint.MoveNext()) 
+        {
+            currentHint = hints.items.GetEnumerator();
+        }
+        var hint = currentHint.Current.text;
+        return hint;
     }
 }
 
