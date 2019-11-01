@@ -2,22 +2,20 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using SceneLoadingSystem;
 
 
 public class HintManager : MonoBehaviour
 {
     private Hints hints;
     [SerializeField]
-    private string Filename;
-    private List<Hint>.Enumerator currentHint;
+    private string Filename = "";
     // Start is called before the first frame update
     void Start()
     {
         if (Filename == "") Debug.LogError("Filename should not be empty");
 
         hints = new Hints();
-
-        currentHint = hints.items.GetEnumerator();
 
         string path = $"{Application.dataPath}/Resources/{Filename}";
 
@@ -63,28 +61,8 @@ public class HintManager : MonoBehaviour
 
     public string GetNextHint() {
 
-        if (!currentHint.MoveNext()) 
-        {
-            currentHint = hints.items.GetEnumerator();
-        }
-        var hint = currentHint.Current.text;
-        return hint;
+        var hintIndex = Random.Range(0, hints.items.Count);
+        
+        return hints.items[hintIndex].text;
     }
-}
-
-[System.Serializable]
-public class Hints {
-    public List<Hint> items;
-
-    public Hints() {
-        items = new List<Hint>();
-    }
-}
-
-[System.Serializable]
-public class Hint
-{
-    public string title;
-    public string text;
-    public float duration;
 }

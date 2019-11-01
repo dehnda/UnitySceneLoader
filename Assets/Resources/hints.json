@@ -1,13 +1,18 @@
 {
     "items": [
         {
-            "title": "Provide title!",
-            "text": "Enter your Hint here!",
+            "title": "Adjusting Stool Height",
+            "text": "Always remember to have fun while working.",
             "duration": 0.0
         },
         {
-            "title": "Provide title!",
-            "text": "Enter your Hint here!",
+            "title": "Refill coffee",
+            "text": "Refilling coffee mug.",
+            "duration": 0.0
+        },
+        {
+            "title": "Adjusting Stool Height",
+            "text": "Cleaning workplace.",
             "duration": 0.0
         }
     ]
