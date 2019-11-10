@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -8,6 +9,8 @@ using UnityEngine.UI;
 public class SceneLoader : MonoBehaviour
 {
     private HintManager hintManager;
+    private bool continueLoading = false;
+    private AsyncOperation operation;
     public Canvas canvas;
     public Slider slider;
     public Text progressText;
@@ -17,12 +20,33 @@ public class SceneLoader : MonoBehaviour
     {
         hintManager = GetComponent<HintManager>();
         StartCoroutine(LoadAsynchronously(sceneIndex));
+    }
 
+    private void Update()
+    {
+        if (!continueLoading)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("space pressed");
+            operation.allowSceneActivation = true;
+        }
     }
 
     IEnumerator LoadAsynchronously(int sceneIndex)
     {
-        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
+        operation = SceneManager.LoadSceneAsync(sceneIndex);
+        operation.allowSceneActivation = false;
+
+        operation.completed += (AsyncOperation) =>
+        {
+
+            // show proceed on click or something
+            //Activate the Scene
+            Debug.Log("completed");
+            continueLoading = true;
+        };
 
         hint.text = hintManager.GetNextHint();
         canvas.gameObject.SetActive(true);
@@ -33,7 +57,7 @@ public class SceneLoader : MonoBehaviour
         while (!operation.isDone)
         {
             // check if next hint should be displayed
-            if ((now + hintManager.GetHintTime()) >= Time.time)
+            if ((now + hintManager.GetHintTime()) <= Time.time)
             {
                 hint.text = hintManager.GetNextHint();
                 now = Time.time;

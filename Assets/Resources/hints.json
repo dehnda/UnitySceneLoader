@@ -1,19 +1,19 @@
 {
     "items": [
         {
-            "title": "Adjusting Stool Height",
+            "title": "WorkFun",
             "text": "Always remember to have fun while working.",
-            "duration": 0.5
+            "duration": 3.0
         },
         {
-            "title": "Refill coffee",
+            "title": "JavaNeed",
             "text": "Refilling coffee mug.",
-            "duration": 0.5
+            "duration": 3.0
         },
         {
             "title": "Adjusting Stool Height",
             "text": "Cleaning workplace.",
-            "duration": 0.5
+            "duration": 3.0
         }
     ]
 }
