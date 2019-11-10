@@ -27,8 +27,18 @@ public class SceneLoader : MonoBehaviour
         hint.text = hintManager.GetNextHint();
         loadingCanvas.SetActive(true);
 
+        // Get current time to find out when to show next hint
+        float now = Time.time;
+
         while (!operation.isDone)
         {
+            // check if next hint should be displayed
+            if ((now + hintManager.GetHintTime()) >= Time.time)
+            {
+                hint.text = hintManager.GetNextHint();
+                now = Time.time;
+            }
+
             float progress = Mathf.Clamp01(operation.progress / .9f);
 
             progressText.text = ((int)(progress * 100)).ToString() + " %";

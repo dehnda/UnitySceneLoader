@@ -10,6 +10,7 @@ public class HintManager : MonoBehaviour
     private Hints hints;
     [SerializeField]
     private string Filename = "";
+    private int hintIndex = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,7 +35,8 @@ public class HintManager : MonoBehaviour
     }
 
 
-    string ReadFromFile(string path) {
+    string ReadFromFile(string path)
+    {
         var filePath = path.Replace(".json", "");
         TextAsset textFile = Resources.Load(filePath) as TextAsset;
         return textFile.text;
@@ -42,7 +44,7 @@ public class HintManager : MonoBehaviour
     string CreateDemoHints()
     {
         var hint = new Hint();
-        hint.duration = 0.0f;
+        hint.duration = 1.0f;
         hint.text = "Enter your Hint here!";
         hint.title = "Provide title!";
         hints.items.Add(hint);
@@ -59,10 +61,16 @@ public class HintManager : MonoBehaviour
         }
     }
 
-    public string GetNextHint() {
+    public string GetNextHint()
+    {
 
-        var hintIndex = Random.Range(0, hints.items.Count);
-        
+        hintIndex = Random.Range(0, hints.items.Count);
+
         return hints.items[hintIndex].text;
+    }
+
+    public float GetHintTime()
+    {
+        return hints.items[hintIndex].duration;
     }
 }
