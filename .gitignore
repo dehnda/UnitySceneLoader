@@ -40,8 +40,10 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+bin/
 
 # Sample Assets
 Assets/VRSampleScenes/
 Assets/VRStandardAssets/
 Assets/TutorialInfo
+Assets/Scripts/SceneLoader.cs

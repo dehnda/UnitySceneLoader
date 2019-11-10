@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class SceneLoader : MonoBehaviour
 {
     private HintManager hintManager;
-    public GameObject loadingCanvas;
+    public Canvas canvas;
     public Slider slider;
     public Text progressText;
     public Text hint;
@@ -25,7 +25,7 @@ public class SceneLoader : MonoBehaviour
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
 
         hint.text = hintManager.GetNextHint();
-        loadingCanvas.SetActive(true);
+        canvas.gameObject.SetActive(true);
 
         // Get current time to find out when to show next hint
         float now = Time.time;
