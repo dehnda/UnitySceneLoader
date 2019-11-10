@@ -4,24 +4,28 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(HintManager))]
 public class SceneLoader : MonoBehaviour
 {
-    public GameObject loadingScreen;
+    private HintManager hintManager;
+    public GameObject loadingCanvas;
     public Slider slider;
     public Text progressText;
     public Text hint;
 
     public void LoadScene(int sceneIndex)
     {
+        hintManager = GetComponent<HintManager>();
         StartCoroutine(LoadAsynchronously(sceneIndex));
+
     }
 
     IEnumerator LoadAsynchronously(int sceneIndex)
     {
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
 
-        hint.text = GetComponent<HintManager>().GetNextHint();
-        loadingScreen.SetActive(true);
+        hint.text = hintManager.GetNextHint();
+        loadingCanvas.SetActive(true);
 
         while (!operation.isDone)
         {
