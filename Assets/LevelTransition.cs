@@ -5,13 +5,14 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class LevelTransition : MonoBehaviour
 {
-    public Animator animator;
+    private Animator animator;
     public GameObject loadingScreen;
     public int sceneIndex;
 
     private SceneLoader sceneLoader;
     void Start()
     {
+        animator = GetComponent<Animator>();
         sceneLoader = loadingScreen.GetComponent<SceneLoader>();
         if (sceneLoader == null) Debug.LogError("sceneloader reference in LevelTransition NULL");
     }
