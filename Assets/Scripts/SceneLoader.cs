@@ -19,6 +19,7 @@ public class SceneLoader : MonoBehaviour
     public void LoadScene(int sceneIndex)
     {
         hintManager = GetComponent<HintManager>();
+        operation = SceneManager.LoadSceneAsync(sceneIndex);
         StartCoroutine(LoadAsynchronously(sceneIndex));
     }
 
@@ -33,21 +34,8 @@ public class SceneLoader : MonoBehaviour
             operation.allowSceneActivation = true;
         }
     }
-
     IEnumerator LoadAsynchronously(int sceneIndex)
     {
-        operation = SceneManager.LoadSceneAsync(sceneIndex);
-        operation.allowSceneActivation = false;
-
-        operation.completed += (AsyncOperation) =>
-        {
-
-            // show proceed on click or something
-            //Activate the Scene
-            Debug.Log("completed");
-            continueLoading = true;
-        };
-
         hint.text = hintManager.GetNextHint();
         canvas.gameObject.SetActive(true);
 
