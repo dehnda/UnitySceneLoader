@@ -3,7 +3,10 @@ using System.Collections.Generic;
 namespace SceneLoadingSystem
 {
 
-     [System.Serializable]
+    /// <summary>
+    /// Class representation of a single hint. Can be serialized.
+    /// </summary>
+    [System.Serializable]
     public class Hint
     {
         public string title;
@@ -11,6 +14,9 @@ namespace SceneLoadingSystem
         public float duration;
     }
 
+    /// <summary>
+    /// Class representation of a lists of hints. Can be serialized.
+    /// </summary>
     [System.Serializable]
     public class Hints
     {
