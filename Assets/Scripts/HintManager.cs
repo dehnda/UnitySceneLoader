@@ -65,7 +65,6 @@ public class HintManager : MonoBehaviour
     {
 
         hintIndex = Random.Range(0, hints.items.Count);
-
         return hints.items[hintIndex].text;
     }
 

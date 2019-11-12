@@ -6,33 +6,28 @@ using UnityEngine;
 public class LevelTransition : MonoBehaviour
 {
     private Animator animator;
-    public GameObject loadingScreen;
-    public int sceneIndex;
+    public delegate void EventTransitionFinished();
+
+    private event EventTransitionFinished OnTransitionFinished;
 
     private SceneLoader sceneLoader;
     void Start()
     {
         animator = GetComponent<Animator>();
-        sceneLoader = loadingScreen.GetComponent<SceneLoader>();
-        if (sceneLoader == null) Debug.LogError("sceneloader reference in LevelTransition NULL");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            FadeToLevel(1);
-        }
-    }
 
-    public void FadeToLevel(int levelIndex)
+    public void FadeToOut(EventTransitionFinished OnEvent)
     {
+        OnTransitionFinished = OnEvent;
         animator.SetTrigger("FadeOut");
     }
 
     public void OnFadeComplete()
     {
-        sceneLoader.LoadScene(sceneIndex);
+        if (OnTransitionFinished != null)
+        {
+            OnTransitionFinished();
+        }
     }
 }

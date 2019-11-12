@@ -5,22 +5,52 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(HintManager))]
 public class SceneLoader : MonoBehaviour
 {
-    private HintManager hintManager;
+    [SerializeField]
+    private GameObject hintManager;
+    [SerializeField]
+    private GameObject loadingScreen;
+    [SerializeField]
+    private GameObject transitionManager;
+    private Canvas loadingCanvas;
     private bool continueLoading = false;
     private AsyncOperation operation;
-    public Canvas canvas;
-    public Slider slider;
-    public Text progressText;
-    public Text hint;
+    private Slider slider;
+    private Text progressText;
+    private Text hint;
+    private HintManager hints;
 
-    public void LoadScene(int sceneIndex)
+    //protected delegate void EventTransitionFinished();
+    private int sceneIndex;
+    private event LevelTransition.EventTransitionFinished OnSuchEvent;
+
+    private void EventHandlingTransitionFinished()
     {
-        hintManager = GetComponent<HintManager>();
+        LoadScene();
+    }
+
+    private void LoadScene()
+    {
         operation = SceneManager.LoadSceneAsync(sceneIndex);
         StartCoroutine(LoadAsynchronously(sceneIndex));
+    }
+
+    public void DoTransition(int index)
+    {
+        sceneIndex = index;
+        transitionManager.GetComponent<LevelTransition>().FadeToOut(OnSuchEvent);
+    }
+
+    void Start()
+    {
+        loadingCanvas = loadingScreen.GetComponent<LoadingScreen>().GetLoadingCanvas();
+        slider = loadingScreen.GetComponent<LoadingScreen>().GetSlider();
+        progressText = loadingScreen.GetComponent<LoadingScreen>().GetSliderPercentageText();
+        hint = loadingScreen.GetComponent<LoadingScreen>().GetHintText();
+        hints = hintManager.GetComponent<HintManager>();
+
+        OnSuchEvent += EventHandlingTransitionFinished;
     }
 
     private void Update()
@@ -36,8 +66,9 @@ public class SceneLoader : MonoBehaviour
     }
     IEnumerator LoadAsynchronously(int sceneIndex)
     {
-        hint.text = hintManager.GetNextHint();
-        canvas.gameObject.SetActive(true);
+        hint.text = hints.GetNextHint();
+        Debug.Log("hint text in sceneloader: " + hint.text);
+        loadingCanvas.gameObject.SetActive(true);
 
         // Get current time to find out when to show next hint
         float now = Time.time;
@@ -45,9 +76,9 @@ public class SceneLoader : MonoBehaviour
         while (!operation.isDone)
         {
             // check if next hint should be displayed
-            if ((now + hintManager.GetHintTime()) <= Time.time)
+            if ((now + hints.GetHintTime()) <= Time.time)
             {
-                hint.text = hintManager.GetNextHint();
+                hint.text = hints.GetNextHint();
                 now = Time.time;
             }
 
