@@ -1,29 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.IO;
+using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using SceneLoadingSystem;
-using System.IO;
 
 namespace Tests
 {
     public class SceneLoaderTests
     {
         [UnityTest]
-        public IEnumerator GameObject_WithHintmanager_Will_Create_a_Hint_Json_File()
+        public IEnumerator GameObject_WithHintmanager_Will_Create_a_Hint_Json_FileTest()
         {
             var go = new GameObject("HintGameObject");
-            var hm = go.AddComponent<HintManager>();
-            var fn = "testHint.json";
+            var hintManager = go.AddComponent<HintManager>();
 
-            hm.SetFileName(fn);
+            long ticks = DateTime.Now.Ticks;  // unique identifier with ticks
+            var fn = $"testHint{ticks}.json";
+            hintManager.Filename = fn;
 
             yield return new WaitForFixedUpdate();
 
-            string path = $"{Application.dataPath}/Resources/{fn}";
-
-            Assert.IsTrue(File.Exists(path));
+            var path = $"{Application.dataPath}/Resources/{fn}";
+            var fileExists = File.Exists(path);
+            Assert.IsTrue(fileExists);
+            if (fileExists)
+            {
+                File.Delete(path);
+            }
         }
         // A Test behaves as an ordinary method
         [Test]
