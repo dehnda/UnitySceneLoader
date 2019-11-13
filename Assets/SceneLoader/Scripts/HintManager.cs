@@ -6,65 +6,107 @@ using UnityEngine;
 
 namespace SceneLoadingSystem
 {
-
+    /// <summary>
+    /// Class for managing hints
+    /// Contains all methods for loading and saving hints.
+    /// </summary>
+    /// <remarks>
+    /// This class can get a Hint, get a hint duration and set filename.
+    /// </remarks>
     public class HintManager : MonoBehaviour
     {
         private Hints hints;
         [SerializeField]
-        private string Filename = "hints.json";
-        private int hintIndex = 0;
+        public string Filename { get; set; } = "hints.json";
+        private int currentHintIndex = 0;
+        private string path;
+
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             if (Filename == "") Debug.LogError("Filename should not be empty");
 
+            path = $"{Application.dataPath}/Resources/";
+
             hints = new Hints();
 
-            CreateFolderAndHintFile();
+            CreateRessourceFolder();
+            CreateHintFile();
+
+            Debug.Assert(hints.items.Count > 0, "SceneLoader: HintList is empty!");
         }
-
-        private void CreateFolderAndHintFile()
+        /// <summary>
+        /// Creates "Resources" folder in Application.dataPath
+        /// </summary>
+        /// <returns>
+        /// void
+        /// </returns>
+        /// <exception cref="System.IO.IOException">Thrown when the folder 
+        /// cannot be created.</exception>
+        private void CreateRessourceFolder()
         {
-            var path = $"{Application.dataPath}/Resources/";
+            var pathInfo = new DirectoryInfo(path);
 
-            try
+            if (!pathInfo.Exists)
             {
-                var pathInfo = new DirectoryInfo(path);
-
-                if (!pathInfo.Exists)
+                try
                 {
                     pathInfo.Create();
                     Debug.Log("Folder " + path + " created.");
                 }
-
-                if (!File.Exists(path + Filename))
+                catch (System.IO.IOException)
                 {
-                    var json = CreateDemoHints();
-                    WriteToFile(json, path + Filename);
-                }
-                else
-                {
-                    var json = ReadFromFile(path + Filename);
-                    JsonUtility.FromJsonOverwrite(json, hints);
+                    Debug.LogError($"{this.name}: Folder {path} could not be created.");
                 }
 
             }
-            catch (Exception e)
+
+        }
+        /// <summary>
+        /// Creates "Hint" file in Application.dataPath
+        /// </summary>
+        /// <returns>
+        /// void
+        /// </returns>
+        private void CreateHintFile()
+        {
+            if (!File.Exists(path + Filename))
             {
-                throw e;
+                var json = CreateDemoHints();
+                WriteToFile(json);
             }
-
-            Debug.Assert(hints.items.Count > 0, "SceneLoader: HintList is empty!");
+            else
+            {
+                var json = ReadFromFile();
+                JsonUtility.FromJsonOverwrite(json, hints);
+            }
         }
 
-
-        string ReadFromFile(string path)
+        /// <summary>
+        /// Reads hints from Ressoure hint json.
+        /// </summary>
+        /// <returns>
+        /// The hint list as json.
+        /// </returns>
+        private string ReadFromFile()
         {
-            var filePath = path.Replace(".json", "");
+            var filePath = (path + Filename).Replace(".json", "");
             TextAsset textFile = Resources.Load(filePath) as TextAsset;
+            if (textFile != null)
+            {
+                return textFile.text;
+            }
+            Debug.LogError($"{this.name}: Resource {filePath} could not be loaded.");
             return textFile.text;
         }
-        string CreateDemoHints()
+
+        /// <summary>
+        /// Creates two default hints and adds to hint list.
+        /// </summary>
+        /// <returns>
+        /// The the list with two default hints as json.
+        /// </returns>
+        private string CreateDemoHints()
         {
             var hint = new Hint();
             hint.duration = 1.0f;
@@ -76,29 +118,53 @@ namespace SceneLoadingSystem
             return JsonUtility.ToJson(hints, true);
         }
 
-        void WriteToFile(string text, string path)
+        /// <summary>
+        /// Writes a string in to hint file.
+        /// </summary>
+        /// <returns>
+        /// void
+        /// </returns>
+        /// <exception cref="System.Exception">Thrown when WriteAsync
+        /// fails.</exception>
+        /// <param name="text">A string to append to file.</param>
+        private void WriteToFile(string text)
         {
-            using (StreamWriter file = File.CreateText(path))
+            using (StreamWriter file = File.CreateText(path + Filename))
             {
-                file.WriteAsync(text);
+                try
+                {
+                    file.WriteAsync(text);
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"{this.name}: Resource {path}\\{Filename} could not be written.\n" +
+                                   $"Exception Message: {e.Message}");
+                }
+
             }
         }
 
+        /// <summary>
+        /// Getter for next hint.
+        /// </summary>
+        /// <returns>
+        /// The next Random hint of the list.
+        /// </returns>
         public string GetNextHint()
         {
-
-            hintIndex = UnityEngine.Random.Range(0, hints.items.Count);
-            return hints.items[hintIndex].text;
+            currentHintIndex = UnityEngine.Random.Range(0, hints.items.Count);
+            return hints.items[currentHintIndex].text;
         }
 
+        /// <summary>
+        /// Getter for current hint duration.
+        /// </summary>
+        /// <returns>
+        /// The current hint duration as float [sec].
+        /// </returns>
         public float GetHintTime()
         {
-            return hints.items[hintIndex].duration;
-        }
-
-        public void SetFileName(string filename)
-        {
-            Filename = filename;
+            return hints.items[currentHintIndex].duration;
         }
     }
 }
