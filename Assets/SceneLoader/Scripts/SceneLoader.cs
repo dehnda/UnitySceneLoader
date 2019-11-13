@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using SceneLoadingSystem;
 
 public class SceneLoader : MonoBehaviour
 {

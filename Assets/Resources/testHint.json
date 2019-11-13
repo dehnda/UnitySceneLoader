@@ -1,0 +1,14 @@
+{
+    "items": [
+        {
+            "title": "Provide title!",
+            "text": "Enter your Hint here!",
+            "duration": 1.0
+        },
+        {
+            "title": "Provide title!",
+            "text": "Enter your Hint here!",
+            "duration": 1.0
+        }
+    ]
+}
