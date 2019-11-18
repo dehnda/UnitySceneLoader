@@ -32,10 +32,15 @@ namespace Tests
         }
         // A Test behaves as an ordinary method
         [Test]
-        public void SceneLoaderTestsSimplePasses()
+        public void SceneLoader_HintStructure_Class_Create_and_Add_to_ListTest()
         {
-            // Use the Assert class to test conditions
-            Assert.Pass("Pass Suite.");
+            var hint = new Hint();
+            hint.duration = 2.0f;
+            hint.text = "TestHint";
+            var hints = new Hints();
+            hints.items.Add(hint);
+
+            Assert.IsNotEmpty(hints.items);
         }
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
