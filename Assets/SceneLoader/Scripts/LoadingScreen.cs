@@ -7,13 +7,13 @@ using SceneLoadingSystem;
 public class LoadingScreen : MonoBehaviour
 {
     [SerializeField]
-    private Canvas canvas;
+    private Canvas canvas = null;
     [SerializeField]
-    private Slider slider;
+    private Slider slider = null;
     [SerializeField]
-    private Text sliderPercentageText;
+    private Text sliderPercentageText = null;
     [SerializeField]
-    private Text hintText;
+    private Text hintText = null;
 
 
     public Canvas GetLoadingCanvas()

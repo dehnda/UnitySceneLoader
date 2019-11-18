@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections;
 using NUnit.Framework;
@@ -41,12 +41,18 @@ namespace Tests
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
         // `yield return null;` to skip a frame.
         [UnityTest]
-        public IEnumerator SceneLoaderTestsWithEnumeratorPasses()
+        public IEnumerator SceneLoader_FadOut_Will_Be_TriggerdTest()
         {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            Assert.Pass("test with enumerator.");
-            yield return null;
+            var go = new GameObject("LevelTransitionGameObject");
+            var anim = go.AddComponent<Animator>();
+            var transition = go.AddComponent<LevelTransition>();
+            
+            anim.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("Animation/LevelTransitionController");
+            
+            anim.SetTrigger("FadeOut");    
+            yield return new WaitForFixedUpdate();
+
+            Assert.IsTrue(anim.GetCurrentAnimatorStateInfo(0).IsName("Fade_out"));
         }
     }
 }

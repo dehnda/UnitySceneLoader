@@ -6,23 +6,25 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using SceneLoadingSystem;
 
+/// <summary>
+/// Main class for sceneloader. 
+/// 
+/// Holds all ui and logic objects.
+/// </summary>
 public class SceneLoader : MonoBehaviour
 {
     [SerializeField]
-    private GameObject hintManager;
+    private GameObject hintManager = null;
     [SerializeField]
-    private GameObject loadingScreen;
+    private GameObject loadingScreen = null;
     [SerializeField]
-    private GameObject transitionManager;
+    private GameObject transitionManager = null;
     private Canvas loadingCanvas;
-    private bool continueLoading = false;
     private AsyncOperation operation;
     private Slider slider;
     private Text progressText;
     private Text hint;
     private HintManager hints;
-
-    //protected delegate void EventTransitionFinished();
     private int sceneIndex;
     private event LevelTransition.EventTransitionFinished OnSuchEvent;
 
@@ -37,13 +39,7 @@ public class SceneLoader : MonoBehaviour
         StartCoroutine(LoadAsynchronously(sceneIndex));
     }
 
-    public void DoTransition(int index)
-    {
-        sceneIndex = index;
-        transitionManager.GetComponent<LevelTransition>().FadeToOut(OnSuchEvent);
-    }
-
-    void Start()
+    private void Start()
     {
         loadingCanvas = loadingScreen.GetComponent<LoadingScreen>().GetLoadingCanvas();
         slider = loadingScreen.GetComponent<LoadingScreen>().GetSlider();
@@ -54,29 +50,16 @@ public class SceneLoader : MonoBehaviour
         OnSuchEvent += EventHandlingTransitionFinished;
     }
 
-    private void Update()
-    {
-        if (!continueLoading)
-            return;
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("space pressed");
-            operation.allowSceneActivation = true;
-        }
-    }
-    IEnumerator LoadAsynchronously(int sceneIndex)
+    private IEnumerator LoadAsynchronously(int sceneIndex)
     {
         hint.text = hints.GetNextHint();
         Debug.Log("hint text in sceneloader: " + hint.text);
         loadingCanvas.gameObject.SetActive(true);
 
-        // Get current time to find out when to show next hint
         float now = Time.time;
 
         while (!operation.isDone)
         {
-            // check if next hint should be displayed
             if ((now + hints.GetHintTime()) <= Time.time)
             {
                 hint.text = hints.GetNextHint();
@@ -90,5 +73,11 @@ public class SceneLoader : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    public void DoTransition(int index)
+    {
+        sceneIndex = index;
+        transitionManager.GetComponent<LevelTransition>().FadeToOut(OnSuchEvent);
     }
 }
