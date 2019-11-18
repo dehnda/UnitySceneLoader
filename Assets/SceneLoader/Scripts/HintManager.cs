@@ -47,19 +47,20 @@ namespace SceneLoadingSystem
         {
             var pathInfo = new DirectoryInfo(path);
 
-            if (!pathInfo.Exists)
+            if (pathInfo.Exists)
+                return;
+        
+            try
             {
-                try
-                {
-                    pathInfo.Create();
-                    Debug.Log("Folder " + path + " created.");
-                }
-                catch (System.IO.IOException)
-                {
-                    Debug.LogError($"{this.name}: Folder {path} could not be created.");
-                }
-
+                pathInfo.Create();
+                Debug.Log("Folder " + path + " created.");
             }
+            catch (System.IO.IOException)
+            {
+                Debug.LogError($"{this.name}: Folder {path} could not be created.");
+            }
+
+        
 
         }
         /// <summary>
@@ -90,14 +91,14 @@ namespace SceneLoadingSystem
         /// </returns>
         private string ReadFromFile()
         {
-            var filePath = (path + Filename).Replace(".json", "");
-            TextAsset textFile = Resources.Load(filePath) as TextAsset;
+            TextAsset textFile = Resources.Load<TextAsset>(Filename.Replace(".json", ""));
             if (textFile != null)
             {
                 return textFile.text;
+            } else {
+                Debug.LogError($"HintManager: Resource {Filename} could not be loaded.");
+                return "";
             }
-            Debug.LogError($"{this.name}: Resource {filePath} could not be loaded.");
-            return textFile.text;
         }
 
         /// <summary>

@@ -53,7 +53,6 @@ public class SceneLoader : MonoBehaviour
     private IEnumerator LoadAsynchronously(int sceneIndex)
     {
         hint.text = hints.GetNextHint();
-        Debug.Log("hint text in sceneloader: " + hint.text);
         loadingCanvas.gameObject.SetActive(true);
 
         float now = Time.time;
